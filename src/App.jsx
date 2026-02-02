@@ -119,7 +119,7 @@ export default function App() {
                 transition={{ duration: 1.2, ease: "easeInOut" }}
                 style={styles.title}
               >
-                {HER_NAME}, (srf Cute thaa ??) will you be my Valentine? 💘
+                {HER_NAME}, will you be my Valentine? 💘
               </motion.h1>
 
               <p style={styles.subtitle}>
