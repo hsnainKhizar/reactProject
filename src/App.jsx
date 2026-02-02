@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import confetti from "canvas-confetti";
 
 const HER_NAME = "Mubeen";
 const YES_IMAGE = "/mubeen-valentine.jpg"; // put this in /public
@@ -47,10 +48,24 @@ function Heart({ x, delay }) {
   );
 }
 
+function fireConfetti() {
+  // A couple of bursts look nicer than one big one
+  confetti({
+    particleCount: 160,
+    spread: 85,
+    origin: { y: 0.68 },
+  });
+  confetti({
+    particleCount: 120,
+    spread: 120,
+    origin: { y: 0.68 },
+  });
+}
+
 export default function App() {
   const [accepted, setAccepted] = useState(false);
 
-  // Start with "No" (index 0) and a stable position.
+  // Start with "No" and a stable position.
   const [noPos, setNoPos] = useState({ x: 120, y: 10 });
   const [noIndex, setNoIndex] = useState(0);
 
@@ -64,13 +79,17 @@ export default function App() {
   }, []);
 
   const dodgeNo = () => {
-    // Keep it inside the card nicely
     const x = randomBetween(-130, 130);
     const y = randomBetween(-60, 80);
     setNoPos({ x, y });
 
     // Change the label only AFTER interaction
     setNoIndex((prev) => (prev + 1) % NO_TEXTS.length);
+  };
+
+  const handleYes = () => {
+    setAccepted(true);
+    fireConfetti();
   };
 
   return (
@@ -114,7 +133,7 @@ export default function App() {
                   whileHover={{ scale: 1.06 }}
                   whileTap={{ scale: 0.96 }}
                   style={styles.yesBtn}
-                  onClick={() => setAccepted(true)}
+                  onClick={handleYes}
                 >
                   Yes 💖
                 </motion.button>
