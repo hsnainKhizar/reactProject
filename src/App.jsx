@@ -50,20 +50,26 @@ function Heart({ x, delay }) {
 export default function App() {
   const [accepted, setAccepted] = useState(false);
 
-  const [noPos, setNoPos] = useState({ x: 0, y: 0 });
+  // Start with "No" (index 0) and a stable position.
+  const [noPos, setNoPos] = useState({ x: 120, y: 10 });
   const [noIndex, setNoIndex] = useState(0);
 
+  // Hearts
   const hearts = useMemo(() => Array.from({ length: 14 }, (_, i) => i), []);
 
   useEffect(() => {
-    dodgeNo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // IMPORTANT: do NOT call dodgeNo() here
+    // We want initial text to be exactly "No".
+    setNoPos({ x: 120, y: 10 });
   }, []);
 
   const dodgeNo = () => {
+    // Keep it inside the card nicely
     const x = randomBetween(-130, 130);
     const y = randomBetween(-60, 80);
     setNoPos({ x, y });
+
+    // Change the label only AFTER interaction
     setNoIndex((prev) => (prev + 1) % NO_TEXTS.length);
   };
 
@@ -122,6 +128,7 @@ export default function App() {
                   }}
                   transition={{ type: "spring", stiffness: 380, damping: 18 }}
                   onMouseEnter={dodgeNo}
+                  onTouchStart={dodgeNo}
                   onClick={dodgeNo}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -158,7 +165,7 @@ export default function App() {
               <p style={styles.subtitle}>
                 You just made me the happiest person 😌
                 <br />
-              
+                {/* Now come here 👉👈 */}
               </p>
 
               {/* Beautiful image reveal */}
@@ -171,6 +178,11 @@ export default function App() {
                 <motion.img
                   src={YES_IMAGE}
                   alt="Valentine"
+                  onError={(e) => {
+                    console.log("Image failed to load:", YES_IMAGE);
+                    e.currentTarget.src =
+                      "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1200&q=80";
+                  }}
                   initial={{ scale: 1.06 }}
                   animate={{ scale: 1 }}
                   transition={{ duration: 1.1, ease: "easeOut" }}
@@ -295,6 +307,9 @@ const styles = {
     background: "rgba(255,255,255,0.10)",
     color: "white",
     fontWeight: 600,
+    userSelect: "none",
+    WebkitUserSelect: "none",
+    touchAction: "manipulation",
   },
   footer: {
     marginTop: 14,
